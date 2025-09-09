@@ -28,14 +28,18 @@ public class SecurityConfig {
             HttpSecurity http,
             @Autowired(required = false) @Nullable FirebaseAuthenticationFilter firebaseFilter
     ) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**").permitAll()
-                        .anyRequest().authenticated()
-                );
+        http.csrf(AbstractHttpConfigurer::disable);
+
         if (firebaseFilter != null) {
+            http.authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/actuator/**").permitAll()
+                    .anyRequest().authenticated()
+            );
             http.addFilterBefore(firebaseFilter, UsernamePasswordAuthenticationFilter.class);
+        } else {
+            http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         }
+
         return http.build();
     }
 }
