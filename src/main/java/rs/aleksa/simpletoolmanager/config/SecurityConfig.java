@@ -2,9 +2,9 @@ package rs.aleksa.simpletoolmanager.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.lang.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.Nullable;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,12 +17,6 @@ import rs.aleksa.simpletoolmanager.service.AuthService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final FirebaseAuthenticationFilter firebaseFilter;
-
-    public SecurityConfig(@Autowired(required = false) @Nullable FirebaseAuthenticationFilter firebaseFilter) {
-        this.firebaseFilter = firebaseFilter;
-    }
-
     @Bean
     @ConditionalOnBean(AuthService.class)
     public FirebaseAuthenticationFilter firebaseAuthenticationFilter(AuthService authService) {
@@ -30,7 +24,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            @Autowired(required = false) @Nullable FirebaseAuthenticationFilter firebaseFilter
+    ) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").permitAll()
