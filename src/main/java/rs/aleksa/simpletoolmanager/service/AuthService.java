@@ -24,10 +24,19 @@ public class AuthService {
             AuthUser user = new AuthUser();
             user.setId(decoded.getUid());
             user.setEmail(decoded.getEmail());
+
+            // Default to the lowest privilege when the role claim is missing or invalid
+            UserRole role = UserRole.WORKER;
             Object roleClaim = decoded.getClaims().get("role");
-            if (roleClaim instanceof String role) {
-                user.setRole(UserRole.valueOf(role.toUpperCase()));
+            if (roleClaim instanceof String roleStr) {
+                try {
+                    role = UserRole.valueOf(roleStr.toUpperCase());
+                } catch (IllegalArgumentException ignore) {
+                    // leave default role
+                }
             }
+            user.setRole(role);
+
             return user;
         } catch (FirebaseAuthException e) {
             throw new RuntimeException("Invalid Firebase ID token", e);
