@@ -4,12 +4,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import rs.aleksa.simpletoolmanager.model.auth.AuthUser;
 import rs.aleksa.simpletoolmanager.service.AuthService;
@@ -20,8 +18,6 @@ import java.util.List;
 /**
  * Filter that validates Firebase ID tokens from the Authorization header.
  */
-@Component
-@ConditionalOnBean(AuthService.class)
 public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthService authService;
